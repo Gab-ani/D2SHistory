@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -34,13 +35,18 @@ public class HistoryController {
 		return history.getUnparsedIDs();
 	}
 	
+	@GetMapping("/parsed/{from}/{to}")
+	public ArrayList<Match> getMatchesByPeriod(@PathVariable(value="from") long from, @PathVariable(value="to") long to) {
+		System.out.println("got /parsed/" + from + "/" + to);
+		return history.getByPeriod(from, to);
+	}
+	
 	@PutMapping(value = "/notice", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
 	public void notice(@RequestBody long[] ids) {
 		System.out.println("Noticing " + ids.length + " matches.");
 		for(long id : ids) {
 			Match match = history.findById(id);
 			if(match == null) {
-				System.out.println("noticed " + id);
 				System.out.println("creating unparsed for " + id); 
 				history.createUnparsed(id); 
 			}

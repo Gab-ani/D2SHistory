@@ -45,4 +45,8 @@ public class History {
 		matchesDB.save(Match.corrupted(id));
 	}
 
+	public ArrayList<Match> getByPeriod(long from, long to) {
+		return matchesDB.findByPeriod(from, to);
+	}
+
 }
